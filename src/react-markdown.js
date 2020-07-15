@@ -19,6 +19,7 @@ const allTypes = Object.keys(defaultRenderers)
 const ReactMarkdown = function ReactMarkdown(props) {
   const src = props.source || props.children || ''
   const parserOptions = props.parserOptions
+  const docName = props.docName
 
   if (props.allowedTypes && props.disallowedTypes) {
     throw new Error('Only one of `allowedTypes` and `disallowedTypes` should be defined')
@@ -39,7 +40,16 @@ const ReactMarkdown = function ReactMarkdown(props) {
   // eslint-disable-next-line no-sync
   const transformedAst = parser.runSync(rawAst)
   const ast = astPlugins.reduce((node, plugin) => plugin(node, renderProps), transformedAst)
-
+  const astChildren = ast.children;
+  let _index = 0;
+  astChildren.forEach((item) => {
+    if(item.type === 'heading') {
+      item._index = _index;
+      item.docName = docName;
+      _index += 1;
+    }
+  })
+  ast.children = astChildren;
   return astToReact(ast, renderProps)
 }
 
@@ -109,7 +119,8 @@ ReactMarkdown.propTypes = {
   unwrapDisallowed: PropTypes.bool,
   renderers: PropTypes.object,
   plugins: PropTypes.array,
-  parserOptions: PropTypes.object
+  parserOptions: PropTypes.object,
+  docName: PropTypes.string
 }
 
 ReactMarkdown.types = allTypes

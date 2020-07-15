@@ -79,7 +79,10 @@ function getNodeProps(node, key, opts, renderer, parent, index) {
       props.children = node.value
       break
     case 'heading':
-      props.level = node.depth
+      props.level = node.depth;
+      props.index = node._index;
+      props.position = node.children[0].position;
+      props.docName = node.docName;
       break
     case 'list':
       props.start = node.start

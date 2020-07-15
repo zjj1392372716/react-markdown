@@ -30,7 +30,6 @@ vendor
 umd
 
 # Babelified
-lib
 
 # Yarn lockfile
 yarn.lock
